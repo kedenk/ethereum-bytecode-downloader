@@ -1,0 +1,29 @@
+{
+  "name": "ethereum-bytecode-downloader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kedenk/ethereum-bytecode-downloader.git"
+  },
+  "keywords": [
+    "ethereum",
+    "smart",
+    "contract",
+    "bytecode"
+  ],
+  "author": "Kevin Denk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kedenk/ethereum-bytecode-downloader/issues"
+  },
+  "homepage": "https://github.com/kedenk/ethereum-bytecode-downloader#readme",
+  "dependencies": {
+    "web3": "^1.0.0-beta.36"
+  }
+}
