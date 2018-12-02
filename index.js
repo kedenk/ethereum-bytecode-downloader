@@ -15,6 +15,8 @@ const filedir = "/home/user/ethereum/samples/";
 const nodeIpc = "/home/user/.ethereum/geth.ipc";
 
 var web3 = new Web3('/home/user/.ethereum/geth.ipc', net);
+var checkedBlocks = 0;
+var toCheck = 0;
 
 
 /*
@@ -47,6 +49,27 @@ function writeBytecodeFile(transaction) {
 
 function writeContractDescriptor(transaction) {
     writeFile(filedir + "descriptor/", transaction.hash + ".desc", repr(transaction));
+}
+
+/*
+* Clean up and close connections
+*/
+function cleanup() { 
+    //web3.currentProvider.connection.close(); 
+    // a little bit hacky. However, 
+    // the script does not terminate after it did 
+    // its work. 
+    process.exit(0);
+}
+
+/*
+* Check if all blocks are checked and clean up
+*/ 
+function checkIfFinished() {
+    if( checkedBlocks == toCheck ) {
+        cleanup();
+        console.log("DONE");
+    }
 }
 
 
@@ -82,6 +105,8 @@ function analyzeBlock(blocknumber) {
         }
         
         console.log("[Block " + blocknumber + "] FINISHED.");
+        checkedBlocks += 1;
+        checkIfFinished();
     
     });
 }
@@ -119,6 +144,7 @@ function getContracts(startBlockNumber, endBlockNumber) {
 
 if( process.argv.length < 4 ) {
     console.error("Use: npm start <startBlockNumber> <endBlockNumber>");
+    cleanup();
     return;
 }
 
@@ -126,8 +152,15 @@ start = process.argv[2];
 end = process.argv[3];
 if( isNaN(start) || isNaN(end) ) {
     console.error("Provided boundaries are no numbers!");
+    cleanup();
+    return;
+}
+if( start > end ) {
+    console.error("Starting block must be smaller than ending block");
+    cleanup();
     return;
 }
 
+toCheck = end - start + 1; 
 console.log("Searching for contracts in blocks " + start + " to " + end);
 getContracts(start, end);
