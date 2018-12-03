@@ -44,7 +44,15 @@ function writeFile(filepath, filename, content) {
 }
 
 function writeBytecodeFile(transaction) {
-    writeFile(filedir + "bytecode/", transaction.hash + ".input", transaction.input);
+    if( transaction.input.length == 0 ) {
+        return false;
+    }
+    var bytecode = transaction.input;
+    if( transaction.input.substring(0,2) == "0x") {
+        bytecode = transaction.input.substring(2, transaction.input.length);
+    }
+    writeFile(filedir + "bytecode/", transaction.hash + ".input", bytecode);
+    return true;
 }
 
 function writeContractDescriptor(transaction) {
@@ -93,8 +101,9 @@ function analyzeBlock(blocknumber) {
                     // create a file with the bytecode
                     // and a file with a description
                     console.log("[Block " + blocknumber + "] Contract found: " + e.hash);
-                    writeBytecodeFile(e);
-                    writeContractDescriptor(e);
+                    if( writeBytecodeFile(e) ) {
+                        writeContractDescriptor(e);
+                    }
                 }
             });
             
